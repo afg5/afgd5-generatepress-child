@@ -1,0 +1,117 @@
+/*
+Theme Name:     afgd5 GeneratePress Child
+Description:    
+Author:         Bryan T
+Template:       generatepress
+
+(optional values you can add: Theme URI, Author URI, Version, License, License URI, Tags, Text Domain)
+*/
+table.afgd5_meetings_table tr, table.afgd5_meetings_table td, table.afgd5_meetings_table th {
+	padding:2px; padding-right:3px; line-height:1.1;
+	margin:0;
+}
+table.afgd5_meetings_table {
+  background-color: #FFFFFF;
+}
+
+table.afgd5_positions {
+	width: 99%; table-layout: auto; border: 0px;
+	border: 0px; padding:2px; padding-right:10px; line-height:1.2;
+	margin:0
+}
+table.afgd5_positions tr,table.afgd5_positions td {
+	border: 0px; padding:2px; padding-right:10px; line-height:1.2;
+	margin:0;
+	white-space:nowrap;
+}
+table.afgd5_positions tr:nth-child(odd) {
+	background-color: #ccc6;
+}
+table.afgd5_positions td.expand{
+	width:99%;
+}
+table.afgd5_positions caption{
+	text-align: center;
+}
+td.afgd5_email { text-align:right; }
+.afgd5_positions_header { margin-bottom:20px }
+.afgd5_positions_header h1 { 
+	display: inline; 
+	padding-right: 10px; 
+}
+.afgd5_positions_header p {
+	display: inline;
+}
+
+.responsiveCal {
+	position: relative; padding-bottom: 75%; height: 0; overflow: hidden;
+}
+ 
+.responsiveCal iframe {
+	position: absolute; top:0; left: 0; width: 100%; height: 100%;
+}
+blockquote { 
+	margin: 0; 
+	padding: 5px 5px 5px 10px;
+	font-size: 1.0em;
+}
+p.noSpaceBottom { margin-bottom:0; padding-bottom:0;}
+
+.site-branding {
+      display: inline-block;
+}
+
+.site-logo {
+      float: left;
+      margin-right: 20px;
+}
+
+.visible-phone {
+  display:none
+}
+@media only screen and (min-width: 150px) and (max-width: 610px)
+{ /*header changes*/
+  .site-logo {
+    display: none;
+  }
+  div.inside-header {
+    padding: 5px;
+  }
+  /*main article/page changes*/
+  .separate-containers div.inside-article {
+    padding: 3%;
+  }
+  .hidden-phone {
+   display:none;
+  }
+  .visible-phone {
+   display:block;
+  }
+
+}
+
+
+/* Print Styles work in progress*/
+@media print {
+  /*body { background:white; color:black; margin:0; }*/
+  /*#right-sidebar {
+    display:none;
+  }*/
+  .side-header, 
+  .main-navigation, 
+  .secondary-navigation, 
+  .widget-area, 
+  .footer-widgets {
+     display: none;
+  }
+  /*.site-footer {
+    display:none
+  }*/
+}
+
+/* used in meetings template */
+.inline-block {
+  display: inline-block;
+}
+
+

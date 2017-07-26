@@ -1,0 +1,9 @@
+
+.acf_postbox > .inside > .field {
+	padding: 1px 1px; !important
+	border-top: #e8e8e8 solid 1px;
+}
+
+.acf_postbox p.label {
+  margin: 0;
+}
