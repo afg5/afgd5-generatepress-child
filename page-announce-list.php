@@ -69,10 +69,21 @@ body, button, input, select, textarea{font-family:"Open Sans", sans-serif;}.main
 			<?php do_action( 'generate_inside_container' ); ?>
 
 <?php 
-$date_now = strtotime(date('Y-m-d H:i:s'));
+//$content = apply_filters('the_content', get_post_field('post_content'));
+//echo( "content=".strip_tags($content)."<br />");
+//echo("current date=".date('Y-m-d H:i:s')."<br />");
+//echo(date('Y F d H:i',strtotime(date('Y-m-d H:i:s'))));
+$lastMailoutTimestamp=get_field('last_mailout_date');
+
+//echo("lastMailouTimestamp=".date('Y F d H:i',$lastMailoutTimestamp)."<br />");
+
+$date_now = strtotime(current_time('mysql',0));
+//echo("now=".date('Y F d H:i',$date_now)."<br />");
 //$date_now = strtotime('2017-08-01 00:00:00');
 $date_cut = $date_now+60*60*24*150;
+//echo("now=".date('Y F d H:i',$date_now). "cut=".date('Y F d H:i',$date_cut)."<br />");
 
+//THe following is all posts that have not expired but are less that 150 days in future
 $args = array(
   'posts_per_page'    => 9999,
   'offset'            => 0,
@@ -109,29 +120,111 @@ $args = array(
 );
 $posts_array = get_posts( $args );
 ?>
-
-  <section id="primary" <?php generate_content_class(); ?>>
-    <main id="main" <?php generate_main_class(); ?>>
-    <?php do_action('generate_before_main_content'); ?>
-    <?php if ( $posts_array ) : ?>
-      <header class="page-header<?php if ( is_author() ) echo ' clearfix';?>">
-		    <?php do_action( 'generate_before_archive_title' ); ?>
-		    <h2><!-- class="page-title"-->
-			    <?php echo(date('Y F')); ?> Announcements		    
-		    </h2>
-		    <?php do_action( 'generate_after_archive_title' ); ?>
+    <section id="primary" <?php generate_content_class(); ?>>
+      <main id="main" <?php generate_main_class(); ?>>
+      <?php do_action('generate_before_main_content'); ?>
+      <?php if ( $posts_array ) : ?>
+        <header class="page-header<?php if ( is_author() ) echo ' clearfix';?>">
+		      <?php do_action( 'generate_before_archive_title' ); ?>
+		      <h2><!-- class="page-title"-->
+			      Current Announcements as of <?php echo(date('Y-m-d g:i A')); ?>
+			    <h2>
+			    <h3>Updated/Posted After <?php echo(date('Y-m-d g:i A',$lastMailoutTimestamp)); ?>
+		      </h3>
+		      <?php do_action( 'generate_after_archive_title' ); ?>
+          
+          <ul>
+            <?php /* Start the Loop */
+            $counter = 0;
+            foreach( $posts_array as $post ){
+              setup_postdata( $post ); 
+              //echo( "<li>modified date".get_post_modified_time('U',false)." mailout=".$lastMailoutTimestamp."</li>");
+              //echo( "<li>modified date".date('Y F d H:i',get_post_modified_time('U',false))." mailout=".date('Y F d H:i',$lastMailoutTimestamp)."</li>");
+              if ( get_post_modified_time('U',false) <= $lastMailoutTimestamp )  continue;
+              $counter = $counter + 1;
+              ?>
+              <?php the_title( '<li><h3 class="entry-title" itemprop="headline"><a href="#apost-'.get_the_ID().'">', '</a></h3></li>' ); ?>
+            <?php } ?>
+          </ul>
+          <?php if ( $counter == 0 ) { ?>
+              None
+          <?php } elseif ( $counter < count($posts_array) ){ //if all posts have not been recently updated ?>
+		      <?php do_action( 'generate_before_archive_title' ); ?>
+		      <h3><!-- class="page-title"-->
+			      Updated/Posted Before <?php echo(date('Y-m-d g:i A',$lastMailoutTimestamp)); ?>
+		      </h3>
+		      <?php do_action( 'generate_after_archive_title' ); ?>
 	
-      <ul>
-        <?php /* Start the Loop */
+          <ul>
+            <?php /* Start the Loop */
+            foreach( $posts_array as $post ){
+              setup_postdata( $post ); 
+              //echo( "<li>modified date".get_the_modified_date()."</li>");
+              if ( get_post_modified_time('U',false) > $lastMailoutTimestamp )  continue;
+              ?>
+              <?php the_title( '<li><h3 class="entry-title" itemprop="headline"><a href="#apost-'.get_the_ID().'">', '</a></h3></li>' ); ?>
+            <?php } ?>
+          </ul>
+          <?php } //if all posts have not been recently updated ?>
+
+
+	      </header><!-- .page-header -->
+        <?php /* Start the Loop again with details */
         foreach( $posts_array as $post ){
-          setup_postdata( $post ); ?>
-          <?php the_title( '<li><h3 class="entry-title" itemprop="headline"><a href="#apost-'.get_the_ID().'">', '</a></h3></li>' ); ?>
-        <?php } ?>
-      </ul>
-	    </header><!-- .page-header -->
-      <?php /* Start the Loop again with details */
+          setup_postdata( $post ); 
+          //echo( "<li>modified date".get_the_modified_date()."</li>");
+          if ( get_post_modified_time('U',false) <= $lastMailoutTimestamp )  continue;
+        ?>
+          <?php
+            /* Include the Post-Format-specific template for the content.
+             * If you want to override this in a child theme, then include a file
+             * called content-___.php (where ___ is the Post Format name) and that will be used instead.
+             */
+            //get_template_part( 'content', get_post_format() );
+            //below from content-single.php from generatepress theme?>
+            <a name="apost-<?php the_ID(); ?>"></a>
+
+        <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> <?php generate_article_schema( 'CreativeWork' ); ?>>
+          <div class="inside-article">
+            <?php do_action( 'generate_before_content'); ?>
+            
+            <header class="entry-header">
+              <?php do_action( 'generate_before_entry_title'); ?>
+              <?php if ( generate_show_title() ) : ?>
+                <?php the_title( '<h2 class="entry-title" itemprop="headline">', '</h2>' ); ?>
+              <?php endif; ?>
+              <?php //do_action( 'generate_after_entry_title'); ?>
+            </header><!-- .entry-header -->
+            
+            <?php do_action( 'generate_after_entry_header'); ?>
+            <div class="entry-content" itemprop="text">
+              <?php the_content(); ?>
+              <?php
+              wp_link_pages( array(
+                'before' => '<div class="page-links">' . __( 'Pages:', 'generatepress' ),
+                'after'  => '</div>',
+              ) );
+              ?>
+            </div><!-- .entry-content -->
+            
+            <?php //do_action( 'generate_after_entry_content' ); ?>
+            <?php do_action( 'generate_after_content' ); ?>
+          </div><!-- .inside-article -->
+        </article><!-- #post-## -->
+
+        <?php } //foreach( $posts_array as $post )?>
+
+        <?php else : //no posts at all?>
+        <p>None</p>
+        <?php endif; ?>
+
+    <?php if ( $posts_array ) : ?>
+      <?php /* Start the details Loop for older updates */
       foreach( $posts_array as $post ){
-        setup_postdata( $post ); ?>
+        setup_postdata( $post ); 
+          //echo( "<li>modified date".get_the_modified_date()."</li>");
+          if ( get_post_modified_time('U',false) > $lastMailoutTimestamp )  continue;
+      ?>
         <?php
           /* Include the Post-Format-specific template for the content.
            * If you want to override this in a child theme, then include a file
