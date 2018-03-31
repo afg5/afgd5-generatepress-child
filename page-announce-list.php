@@ -127,7 +127,7 @@ $posts_array = get_posts( $args );
         <header class="page-header<?php if ( is_author() ) echo ' clearfix';?>">
 		      <?php do_action( 'generate_before_archive_title' ); ?>
 		      <h2><!-- class="page-title"-->
-			      Current Announcements as of <?php echo(date('Y-m-d g:i A')); ?>
+			      Current Announcements as of <?php echo(date('Y-m-d g:i A',strtotime(current_time('mysql',0)))); ?>
 			    <h2>
 			    <h3>Updated/Posted After <?php echo(date('Y-m-d g:i A',$lastMailoutTimestamp)); ?>
 		      </h3>
