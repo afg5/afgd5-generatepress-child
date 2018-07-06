@@ -59,6 +59,7 @@ body, button, input, select, textarea{font-family:"Open Sans", sans-serif;}.main
     display:none;
   }
 </style>-->
+<textarea rows="20" cols="80">
 <div id="pseudo-body" style="width:100%" <?php body_class(); ?>> <!-- pseudo-body -->
 	<?php //do_action( 'generate_before_header' ); ?>
 	<?php //do_action( 'generate_header' ); ?>
@@ -282,6 +283,7 @@ do_action('generate_sidebars');?>
 </div><!-- #page -->
 
 </div><!-- pseudo-body -->
+</textarea>
 </div><!-- #outerdiv -->
 <?php do_action('generate_before_footer'); ?>
 <div <?php generate_footer_class(); ?>>
